@@ -1,0 +1,69 @@
+﻿@{
+    Layout = "";
+}
+
+@inject NmiPaymentSettings nmiPaymentSettings
+@inject Nop.Core.Domain.Orders.OrderSettings orderSettings
+
+@using NopValley.Plugin.Payments.Nmi
+@model NopValley.Plugin.Payments.Nmi.Models.PaymentInfoModel
+
+@*@if (!Model.IsGuest && Model.AllowCustomerToSaveCards && Model.StoredCards.Any())
+{
+    <table width="100%" cellspacing="2" cellpadding="1" border="0">
+        <tr>
+            <td>
+                <label asp-for="StoredCardId">@T("Plugins.Payments.Nmi.Fields.StoredCard"):</label>
+            </td>
+            <td>
+                <select asp-for="StoredCardId" asp-items="Model.StoredCards" class="nmi-input"></select>
+            </td>
+        </tr>
+    </table>
+}*@
+
+<table width="100%" cellspacing="2" cellpadding="1" border="0" id="nmi-card-details">
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.CardNumber, false):
+        </td>
+        <td id="ccnumber">
+            <input type="text" asp-for="CardNumber" style="width:165px;" autocomplete="off" maxlength="22" />
+            <span asp-validation-for="CardNumber"></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+
+        </td>
+        <td class="error" id="ccnumber-error"></td>
+    </tr>
+    <tr>
+        <td>
+            <label asp-for="ExpireMonth">@T("Payment.ExpirationDate"):</label>
+        </td>
+        <td>
+            <select asp-for="ExpireMonth" asp-items="Model.ExpireMonths"></select>
+            /
+            <select asp-for="ExpireYear" asp-items="Model.ExpireYears"></select>
+        </td>
+    </tr>    
+    <tr>
+        <td></td>
+        <td class="error" id="ccexp-error"></td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.CardCode, false):
+        </td>
+        <td id="cvv">
+             <input type="text" asp-for="CardCode" style="width:60px;" autocomplete="off" maxlength="4" />
+            <span asp-validation-for="CardCode"></span>
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td class="error" id="cvv-error"></td>
+    </tr>  
+    
+</table>

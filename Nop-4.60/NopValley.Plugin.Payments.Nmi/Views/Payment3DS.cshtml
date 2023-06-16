@@ -1,0 +1,138 @@
+﻿@model NopValley.Plugin.Payments.Nmi.Models.PaymentInfoModel
+@inject NmiPaymentSettings nmiPaymentSettings
+@inject Nop.Core.Domain.Orders.OrderSettings orderSettings
+
+@using NopValley.Plugin.Payments.Nmi
+@using Nop.Core
+@using Nop.Services.Customers
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@inject ICustomerService _customerService
+@{
+    Layout = "_ColumnsOne";
+
+    var storeLocation = webHelper.GetStoreLocation();
+
+}  
+<link rel="stylesheet" href="~/Plugins/Payments.Nmi/Content/css/style.css" />
+<script src="https://secure.networkmerchants.com/js/v1/Gateway.js"></script>
+
+<div class="loader">
+    <div class="loader-content"></div>
+</div>
+
+<div id="response-error">
+
+</div>
+
+<div id="threeds">
+
+</div>
+
+    <script>
+        // Initialize Gateway.js
+        const gateway = Gateway.create('@Model.CheckoutKey');
+
+        // Initialize the ThreeDSService
+        const threeDS = gateway.get3DSecure();
+
+        // Create a 3DS Frame
+        // This will start out 0px x 0px during fingerprinting.
+        // If the customer is prompted to complete a challenge, it will resize automatically.
+        const options = {
+            cardNumber: '@Model.CardNumber',
+            cardExpMonth: '@Model.ExpireMonth',
+            cardExpYear: '@Model.ExpireYear',
+            currency: '@Model.Currency',
+            amount: '@Model.Amount',
+            email: '@Model.Email',
+            phone: '@Model.Phone',
+            city: '@Model.City',
+            state: '@Model.State',
+            address1: '@Model.Address1',
+            country: '@Model.Country',
+            firstName: '@Model.FirstName',
+            lastName: '@Model.LastName',
+            postalCode: '@Model.PostalCode'
+        };
+
+        const threeDSecureInterface  = threeDS.createUI(options);
+
+        // Mount the threeDSecureInterface to the DOM
+        // This begins the collection of 3DS data.
+        threeDSecureInterface.start('#threeds');
+
+        // Listen for the threeDSecureInterface to ask the user for a password
+        threeDSecureInterface.on('challenge', function(e) {
+            console.log('Challenged'); 
+            console.log(e);      
+           
+            const myInterval = setInterval(myTimer, 100);
+            function myTimer() {
+              if($.trim($("#threeds").html()) != ""){
+                  $(".loader").hide(); 
+                  clearInterval(myInterval);
+              }
+            }
+
+            function myStopFunction() {
+              clearInterval(myInterval);
+            }
+        });        
+
+        // Listen for the threeDSecureInterface to provide all the needed 3DS data
+        threeDSecureInterface.on('complete', function(e) {
+             
+            console.log("ss");
+            var data = {
+                    ...options,
+                    cavv: e.cavv,
+                    xid: e.xid,
+                    eci: e.eci,
+                    cardHolderAuth: e.cardHolderAuth,
+                    threeDsVersion: e.threeDsVersion,
+                    directoryServerId: e.directoryServerId,
+                    orderid: @Model.OrderId
+                };
+
+             fetch('@Url.RouteUrl("Plugins.Payments.Nmi.NMIAPI")', {
+                method: 'POST',
+                contentType: "application/json",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(data => { 
+                    console.log(data)
+                    if(data.response == "1") {
+                       window.location.href = window.location.origin + '@Url.RouteUrl("CheckoutCompleted")'
+                    }                    
+                    else if(data.response != "1"){
+                        $(".loader").hide();
+                        $("#response-error").html(data.responseText).show();
+
+                        setTimeout(function(){
+                            window.location.href = window.location.href;
+                        },100);
+                         
+                    }
+                })
+            
+        });
+
+        // Listen for the threeDSecureInterface to indicate that the customer
+        // has failed to authenticate
+        threeDSecureInterface.on('failure', function(e) {
+            console.log('failure');
+            console.log(e);
+        });
+
+        // Listen for any errors that might occur.
+        gateway.on('error', function (e) {
+            console.error(e);
+        });
+
+        $(function(){
+            $(".loader").show();
+        });
+        
+    </script>

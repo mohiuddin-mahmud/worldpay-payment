@@ -1,0 +1,53 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Web.Framework.Mvc.ModelBinding;
+
+namespace NopValley.Plugin.Payments.Nmi.Models
+{
+    public class ConfigurationModel
+    {
+        public int ActiveStoreScopeConfiguration { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.Username")]
+        public string Username { get; set; }
+        public bool Username_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.Password")]
+        public string Password { get; set; }
+        public bool Password_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.UseUsernamePassword")]
+        public bool UseUsernamePassword { get; set; }
+        public bool UseUsernamePassword_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.AllowCustomerToSaveCards")]
+        public bool AllowCustomerToSaveCards { get; set; }
+        public bool AllowCustomerToSaveCards_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.SecurityKey")]
+        public string SecurityKey { get; set; }
+        public bool SecurityKey_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.CollectJsTokenizationKey")]
+        public string CollectJsTokenizationKey { get; set; }
+        public bool CollectJsTokenizationKey_OverrideForStore { get; set; }
+
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.CheckoutKey")]
+        public string CheckoutKey { get; set; }
+        public bool CheckoutKey_OverrideForStore { get; set; }
+
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.TransactModeValues")]
+        public int TransactModeId { get; set; }
+        public bool TransactModeId_OverrideForStore { get; set; }
+        public SelectList TransactModeValues { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.AdditionalFee")]
+        public decimal AdditionalFee { get; set; }
+        public bool AdditionalFee_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Plugins.Payments.Nmi.Fields.AdditionalFeePercentage")]
+        public bool AdditionalFeePercentage { get; set; }
+        public bool AdditionalFeePercentage_OverrideForStore { get; set; }
+    }
+}

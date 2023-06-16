@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "Credit Card",
+  "SystemName": "Payments.Nmi",
+  "Version": "1.50",
+  "SupportedVersions": [ "4.60" ],
+  "Author": "nopvalley.com",
+  "DisplayOrder": 1,
+  "FileName": "NopValley.Plugin.Payments.Nmi.dll",
+  "Description": "This plugin allows paying with NMI"
+}
